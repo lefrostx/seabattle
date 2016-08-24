@@ -16,12 +16,13 @@ void SeaBattleClient::Box::init(int boxPlace, int boxRow, int boxCol)
     place = boxPlace;
     row = boxRow;
     col = boxCol;
-    int oceanPaddingX = place % 2 * (Map::mapSize + 1) * iconSize + iconSize;
-    int oceanPaddingY = place / 2 * (Map::mapSize + 1) * iconSize + iconSize;
+    int oceanPaddingX = place % 2 * (Map::mapSize + 1) * iconSize + iconSize * 4.5;
+    int oceanPaddingY = place / 2 * (Map::mapSize + 1) * iconSize + iconSize * 0.7;
 
     int x = oceanPaddingX + col * (iconSize + 1);
     int y = oceanPaddingY + row * (iconSize + 1);
 
+    setFlat(true);
     resize(iconSize, iconSize);
     move(x, y);
 }
