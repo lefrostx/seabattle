@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="fail.png">resources/images/fail.png</file>
+        <file alias="kill.png">resources/images/kill.png</file>
+        <file alias="none.png">resources/images/none.png</file>
+        <file alias="ship.png">resources/images/ship.png</file>
+        <file alias="unkn.png">resources/images/unkn.png</file>
+        <file alias="fire.png">resources/images/fire.png</file>
+        <file alias="start.png">resources/images/start.png</file>
+    </qresource>
+</RCC>
