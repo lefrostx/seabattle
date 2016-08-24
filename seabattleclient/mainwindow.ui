@@ -55,7 +55,7 @@
      <enum>QLayout::SetFixedSize</enum>
     </property>
     <item>
-     <widget class="QFrame" name="pictureMain">
+     <widget class="QLabel" name="pictureMain">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -489,13 +489,13 @@
       <property name="frameShape">
        <enum>QFrame::Box</enum>
       </property>
-      <property name="frameShadow">
-       <enum>QFrame::Plain</enum>
+      <property name="text">
+       <string/>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="labelStatus">
+     <widget class="QLabel" name="labelMessage">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
