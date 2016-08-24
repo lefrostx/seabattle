@@ -1,8 +1,7 @@
 #include "ocean.h"
 
-SeaBattleClient::Ocean::Ocean(int oceanPlace, const QString &oceanTitle) :
-    place{oceanPlace},
-    title{oceanTitle}
+SeaBattleClient::Ocean::Ocean(int oceanPlace) :
+    place{oceanPlace}
 {
 }
 

@@ -12,7 +12,7 @@ namespace SeaBattleClient {
 
     class Ocean {
     public:
-        Ocean(int oceanPlace, const QString & oceanTitle);
+        explicit Ocean(int oceanPlace);
         void create(int shipCount);
 
         void fire(int row, int col);
@@ -25,7 +25,6 @@ namespace SeaBattleClient {
         void createBox(int row, int col);
         void changeBox(int row, int col);
         int place;
-        QString title;
         Map map;
         matrix<Box*> box {Map::mapSize, Map::mapSize};
     };
