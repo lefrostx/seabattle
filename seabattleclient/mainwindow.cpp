@@ -4,11 +4,12 @@
 
 namespace {
     const QString serverUrl{"http://localhost/seabattle/battle.php"};
-    using SeaBattleClient::ServerInfo;
-    using SeaBattleClient::ServerShip;
-    using SeaBattleClient::ServerFire;
-    using SeaBattleClient::ServerGame;
 }
+
+using SeaBattleClient::ServerInfo;
+using SeaBattleClient::ServerShip;
+using SeaBattleClient::ServerFire;
+using SeaBattleClient::ServerGame;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -27,6 +28,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(serverInfo,     &ServerInfo::infoReceived,
             this,           &MainWindow::receiveInfo);
 
+    connect(serverShip,     &ServerShip::shipReceived,
+            this,           &MainWindow::receiveShip);
+
+    SeaBattleClient::Box::pictureMain = ui->pictureMain;
+    SeaBattleClient::Box::boxClicked = [this](int ocean, int row, int col){return funcBoxClicked(ocean, row, col);};
+
     prepare();
 }
 
@@ -35,15 +42,20 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::funcBoxClicked(int /*place*/, int /*row*/, int /*col*/)
+{
+
+}
+
 void MainWindow::updateStatus()
 {
     switch(status) {
-        case Status::init: doInit(); break;
-        case Status::wait: doWait(); break;
-        case Status::ship: doShip(); break;
-        case Status::load: doLoad(); break;
-        case Status::play: doPlay(); break;
-        case Status::stop: doStop(); break;
+        case Status::init:  doInit();   break;
+        case Status::wait:  doWait();   break;
+        case Status::ship:  doShip();   break;
+        case Status::load:  doLoad();   break;
+        case Status::play:  doPlay();   break;
+        case Status::stop:  doStop();   break;
     }
 }
 
@@ -63,10 +75,21 @@ void MainWindow::receiveInfo()
     }
 }
 
+void MainWindow::receiveShip()
+{
+    if (serverShip->getResult() == "ok") {
+        status = Status::load;
+        showMessage("Ваши корабли успешно размещены");
+    } else {
+        status = Status::ship;
+        showMessage("Ошибка размещения кораблей " + serverShip->getError());
+    }
+}
+
 void MainWindow::prepare()
 {
     status = Status::init;
-    timer->start(500);
+    timer->start(1000);
 }
 
 void MainWindow::doInit()
@@ -78,13 +101,22 @@ void MainWindow::doInit()
 
 void MainWindow::doWait()
 {
-    showMessage("Ожидание сервера");
     serverInfo->request();
 }
 
 void MainWindow::doShip()
 {
+    int oceanCount  {serverInfo->getOceans()};
+    int shipCount   {serverInfo->getShips()};
 
+    oceans.clear();
+
+    for (int i{}; i < oceanCount; ++i) {
+        oceans.push_back(SeaBattleClient::Ocean{i});
+        oceans[i].create(myOcean == i ? shipCount : 0);
+    }
+
+    serverShip->request(myOcean, oceans[myOcean].getMap().getShips());
 }
 
 void MainWindow::doLoad()

@@ -3,7 +3,9 @@
 
 #include <QMainWindow>
 #include <QTimer>
+#include <vector>
 #include "server.h"
+#include "ocean.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,10 +27,12 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void funcBoxClicked(int place, int row, int col);
 
 public slots:
     void updateStatus();
     void receiveInfo();
+    void receiveShip();
 
 private:
     void prepare();
@@ -47,6 +51,8 @@ private:
     SeaBattleClient::ServerShip *serverShip;
     SeaBattleClient::ServerFire *serverFire;
     SeaBattleClient::ServerGame *serverGame;
+
+    std::vector<SeaBattleClient::Ocean> oceans;
 
     Status status{Status::init};
     int myOcean{-1};
