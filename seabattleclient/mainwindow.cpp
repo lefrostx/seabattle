@@ -1,14 +1,31 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QPixmap>
+
+namespace {
+    const QString serverUrl{"http://localhost/seabattle/battle.php"};
+    using SeaBattleClient::ServerInfo;
+    using SeaBattleClient::ServerShip;
+    using SeaBattleClient::ServerFire;
+    using SeaBattleClient::ServerGame;
+}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    timer{new QTimer{this}},
+    serverInfo{new ServerInfo{serverUrl, this}},
+    serverShip{new ServerShip{serverUrl, this}},
+    serverFire{new ServerFire{serverUrl, this}},
+    serverGame{new ServerGame{serverUrl, this}}
 {
     ui->setupUi(this);
 
-    timer = new QTimer{this};
-    connect(timer, &QTimer::timeout, this, &MainWindow::updateStatus);
+    connect(timer,          &QTimer::timeout,
+            this,           &MainWindow::updateStatus);
+
+    connect(serverInfo,     &ServerInfo::infoReceived,
+            this,           &MainWindow::receiveInfo);
 
     prepare();
 }
@@ -30,6 +47,22 @@ void MainWindow::updateStatus()
     }
 }
 
+void MainWindow::receiveInfo()
+{
+    if (serverInfo->getStatus() == "wait") {
+        if (serverInfo->getFreeOcean() >= 0) {
+            myOcean = serverInfo->getFreeOcean();
+            ui->pictureMain->clear();
+            showMessage("Получен океан № " + QString::number(myOcean));
+            status = Status::ship;
+        } else {
+            showMessage("Нет свободных океанов");
+        }
+    } else {
+        showMessage("Игра уже идет, дождитесь окончания");
+    }
+}
+
 void MainWindow::prepare()
 {
     status = Status::init;
@@ -38,16 +71,15 @@ void MainWindow::prepare()
 
 void MainWindow::doInit()
 {
-    QPalette pal;
-    pal.setBrush(ui->pictureMain->backgroundRole(), QBrush(QPixmap(":/start.png")));
-    ui->pictureMain->setPalette(pal);
-
+    showMessage("Подготовка экрана");
+    ui->pictureMain->setPixmap(QPixmap(":/start.png"));
     status = Status::wait;
 }
 
 void MainWindow::doWait()
 {
-
+    showMessage("Ожидание сервера");
+    serverInfo->request();
 }
 
 void MainWindow::doShip()
@@ -68,4 +100,9 @@ void MainWindow::doPlay()
 void MainWindow::doStop()
 {
 
+}
+
+void MainWindow::showMessage(const QString &message)
+{
+    ui->labelMessage->setText(message);
 }

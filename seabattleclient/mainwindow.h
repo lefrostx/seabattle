@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QTimer>
+#include "server.h"
 
 namespace Ui {
 class MainWindow;
@@ -27,6 +28,7 @@ public:
 
 public slots:
     void updateStatus();
+    void receiveInfo();
 
 private:
     void prepare();
@@ -36,10 +38,18 @@ private:
     void doLoad();
     void doPlay();
     void doStop();
+    void showMessage(const QString & message);
 
     Ui::MainWindow *ui;
-    QTimer* timer;
+    QTimer *timer;
+
+    SeaBattleClient::ServerInfo *serverInfo;
+    SeaBattleClient::ServerShip *serverShip;
+    SeaBattleClient::ServerFire *serverFire;
+    SeaBattleClient::ServerGame *serverGame;
+
     Status status{Status::init};
+    int myOcean{-1};
 };
 
 #endif // MAINWINDOW_H
