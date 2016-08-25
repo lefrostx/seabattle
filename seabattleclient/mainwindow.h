@@ -33,6 +33,8 @@ public slots:
     void updateStatus();
     void receiveInfo();
     void receiveShip();
+    void receiveFire(int fromOcean, int toOcean, int toRow, int toCol);
+    void receiveGame();
 
 private:
     void prepare();
